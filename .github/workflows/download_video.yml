@@ -20,7 +20,7 @@ jobs:
 
       - name: Install yt-dlp
         run: |
-          python3 -m pip install -U yt-dlp
+          python3 -m pip install -U "yt-dlp[default,curl-cffi]"
           ffmpeg -version | head -n 1
 
       - name: Download video
