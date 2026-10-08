@@ -1,0 +1,39 @@
+name: Download video
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Video link to download"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install yt-dlp
+        run: |
+          python3 -m pip install -U yt-dlp
+          ffmpeg -version | head -n 1
+
+      - name: Download video
+        env:
+          VIDEO_URL: ${{ inputs.url }}
+        run: |
+          mkdir -p videos
+          yt-dlp -S "res:480" --merge-output-format mp4 -o "videos/elsalexi.mp4" "$VIDEO_URL"
+
+      - name: Commit and push file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add videos/elsalexi.mp4
+          git commit -m "Add elsalexi.mp4" || echo "Nothing to commit"
+          git push
